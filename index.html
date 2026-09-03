@@ -1,79 +1,1531 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ESHCC Academic Calendar 2026–2027</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#172033;font-family:Arial,Helvetica,sans-serif}
-.wrap{max-width:1450px;margin:auto;padding:28px}h1{margin:0 0 5px;font-size:30px;color:#17365d}
-.sub{color:#687386;margin-bottom:20px}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.legend span{padding:7px 10px;border-radius:20px;font-size:12px;font-weight:bold}
-.controls{display:flex;gap:8px;margin-bottom:18px}button{background:#fff;border:1px solid #d6dde7;border-radius:8px;padding:9px 14px;font-weight:bold;cursor:pointer}
-button:disabled{opacity:.4}.months{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.month{background:#fff;border:1px solid #d6dde7;border-radius:14px;overflow:hidden}
-.head{padding:12px 15px;background:#edf3f9;border-bottom:1px solid #d6dde7;display:flex;justify-content:space-between}
-.monthname{font-weight:bold;font-size:16px}.term{font-size:11px;color:#687386;font-weight:bold}
-.weekdays,.days{display:grid;grid-template-columns:repeat(7,1fr)}.weekday{text-align:center;font-size:10px;font-weight:bold;color:#687386;padding:7px;border-bottom:1px solid #d6dde7}
-.day{min-height:95px;padding:6px;border-right:1px solid #d6dde7;border-bottom:1px solid #d6dde7;overflow:hidden}
-.day:nth-child(7n){border-right:0}.outside{background:#fafbfc}.outside>*{visibility:hidden}
-.num{font-size:11px;font-weight:bold;color:#687386;margin-bottom:4px}.event{font-size:9px;line-height:1.2;font-weight:bold;border-radius:5px;padding:4px 5px;margin:3px 0}
-.note{margin-top:18px;background:#fff;border:1px solid #d6dde7;border-radius:12px;padding:12px;color:#687386;font-size:12px}
-@media(max-width:850px){.months{grid-template-columns:1fr}.wrap{padding:14px}}
-@media print{body{background:#fff}.wrap{max-width:none;padding:8mm}.controls{display:none}.months{grid-template-columns:1fr 1fr;gap:5mm}.day{min-height:23mm}@page{size:A4 landscape;margin:8mm}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESHCC Academic Calendar 2026–2027 | Erasmus University Rotterdam</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf.js for generating PDF files directly -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        eur: {
+                            green: '#00A3A6',
+                            darkGreen: '#004B49',
+                            navy: '#0B2545',
+                            gold: '#D4AF37',
+                            softBg: '#F4F7F6',
+                        },
+                        activity: {
+                            lecture: '#2563EB',      // Blue
+                            assessment: '#D97706',  // Amber
+                            teachingFree: '#0D9488',// Teal
+                            recess: '#64748B',      // Slate
+                            holiday: '#DC2626',     // Red
+                            special: '#7C3AED',     // Purple
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Hide scrollbar for mobile strips */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Printing Styles */
+        @media print {
+            .no-print, nav, header, .filter-bar, button, .modal-backdrop {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+                font-size: 10pt;
+            }
+            .print-container {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .month-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                border: 1px solid #cbd5e1 !important;
+                box-shadow: none !important;
+                margin-bottom: 1.5rem !important;
+            }
+            .print-header {
+                display: block !important;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+        }
+
+        .print-header {
+            display: none;
+        }
+
+        /* Calendar grid day cell aspect */
+        .day-cell {
+            min-height: 80px;
+        }
+        @media (max-width: 640px) {
+            .day-cell {
+                min-height: 58px;
+            }
+        }
+    </style>
 </head>
-<body>
-<div class="wrap">
-<h1>ESHCC Academic Calendar 2026–2027</h1>
-<div class="sub">Erasmus School of History, Culture and Communication · month-by-month view</div>
-<div id="legend" class="legend"></div>
-<div class="controls"><button id="prev">← Previous</button><button id="next">Next →</button><button id="print">Print / Save as PDF</button></div>
-<div id="months" class="months"></div>
-<div class="note"><b>No duplicate spillover:</b> days belonging to the previous or next month are intentionally blank. Each event is shown only within its actual calendar month.</div>
-</div>
-<script>
-const EVENTS=[["2026-08-17", "2026-08-23", "Eurekaweek 2026", "special"], ["2026-08-24", "2026-08-30", "Introduction student associations + new students", "special"], ["2026-08-31", "2026-08-31", "Start academic year", "special"], ["2026-08-31", "2026-09-04", "Lectures · T1 P1", "lecture"], ["2026-09-07", "2026-09-11", "Lectures · T1 P2", "lecture"], ["2026-09-14", "2026-09-18", "Lectures · T1 P3", "lecture"], ["2026-09-21", "2026-09-25", "Lectures · T1 P4", "lecture"], ["2026-09-28", "2026-10-02", "Lectures · T1 P5", "lecture"], ["2026-10-05", "2026-10-09", "Lectures · T1 P6", "lecture"], ["2026-10-12", "2026-10-16", "Lectures · T1 P7", "lecture"], ["2026-10-19", "2026-10-23", "Lectures · T1 P8", "lecture"], ["2026-10-26", "2026-10-30", "Teaching-free / self-study", "free"], ["2026-11-02", "2026-11-06", "Assessment & evaluation", "assessment"], ["2026-11-09", "2026-11-13", "Lectures · T2 P1", "lecture"], ["2026-11-16", "2026-11-20", "Lectures · T2 P2", "lecture"], ["2026-11-23", "2026-11-27", "Lectures · T2 P3", "lecture"], ["2026-11-30", "2026-12-04", "Lectures · T2 P4", "lecture"], ["2026-12-07", "2026-12-11", "Lectures · T2 P5", "lecture"], ["2026-12-14", "2026-12-18", "Teaching-free / self-study", "free"], ["2026-12-21", "2027-01-03", "Winter recess", "recess"], ["2027-01-04", "2027-01-08", "Lectures · T2 P7", "lecture"], ["2027-01-11", "2027-01-15", "Lectures · T2 P8", "lecture"], ["2027-01-18", "2027-01-22", "Lectures · T2 P9", "lecture"], ["2027-01-25", "2027-01-29", "Assessment & evaluation", "assessment"], ["2027-02-01", "2027-02-05", "Lectures · T3 P1", "lecture"], ["2027-02-08", "2027-02-12", "Lectures · T3 P2", "lecture"], ["2027-02-15", "2027-02-19", "Lectures · T3 P3", "lecture"], ["2027-02-22", "2027-02-26", "Lectures · T3 P4", "lecture"], ["2027-03-01", "2027-03-05", "Lectures · T3 P5", "lecture"], ["2027-03-08", "2027-03-12", "Lectures · T3 P6", "lecture"], ["2027-03-15", "2027-03-19", "Lectures · T3 P7", "lecture"], ["2027-03-22", "2027-03-26", "Lectures · T3 P8 · Fri no class", "lecture"], ["2027-03-29", "2027-04-02", "Teaching-free / self-study", "free"], ["2027-04-05", "2027-04-09", "Assessment & evaluation + exchange resits", "assessment"], ["2027-04-12", "2027-04-16", "Lectures · T4 P1", "lecture"], ["2027-04-19", "2027-04-23", "Lectures · T4 P2", "lecture"], ["2027-04-26", "2027-04-30", "Lectures · T4 P3 · Tue no class", "lecture"], ["2027-05-03", "2027-05-07", "Lectures · T4 P4 · Wed/Thu no class", "lecture"], ["2027-05-10", "2027-05-14", "Lectures · T4 P5", "lecture"], ["2027-05-17", "2027-05-21", "Lectures · T4 P6 · Mon no class", "lecture"], ["2027-05-24", "2027-05-28", "Lectures · T4 P7", "lecture"], ["2027-05-31", "2027-06-04", "Lectures · T4 P8", "lecture"], ["2027-06-07", "2027-06-11", "Lectures · T4 P9", "lecture"], ["2027-06-14", "2027-06-18", "Teaching-free / self-study", "free"], ["2027-06-21", "2027-06-25", "Assessment & evaluation", "assessment"], ["2027-06-28", "2027-07-02", "Resit BA1 priority + BA2/3", "assessment"], ["2027-07-05", "2027-07-09", "Resit minors + BA2/3 + BA1 T4", "assessment"], ["2027-07-12", "2027-07-16", "Teaching-free / grading", "free"], ["2027-07-19", "2027-08-15", "Summer recess", "recess"], ["2027-08-16", "2027-08-20", "Eurekaweek 2027", "special"], ["2027-08-23", "2027-08-29", "Introduction new students", "special"], ["2027-08-30", "2027-08-30", "Start academic year 2027–28", "special"], ["2027-03-26", "2027-03-26", "Good Friday", "holiday"], ["2027-03-29", "2027-03-29", "Easter Monday", "holiday"], ["2027-04-27", "2027-04-27", "Kings Day", "holiday"], ["2027-05-05", "2027-05-05", "Liberation Day", "holiday"], ["2027-05-06", "2027-05-06", "Ascension Day", "holiday"], ["2027-05-17", "2027-05-17", "Whit Monday", "holiday"]];
-const MONTHS=[[2026, 8, "Term 1"], [2026, 9, "Term 1"], [2026, 10, "Term 1"], [2026, 11, "Term 2"], [2026, 12, "Term 2"], [2027, 1, "Term 2"], [2027, 2, "Term 3"], [2027, 3, "Term 3"], [2027, 4, "Term 4"], [2027, 5, "Term 4"], [2027, 6, "Term 4"], [2027, 7, "Resit period"], [2027, 8, "Education free period"]];
-const TERMS={"2026,8": "Term 1", "2026,9": "Term 1", "2026,10": "Term 1", "2026,11": "Term 2", "2026,12": "Term 2", "2027,1": "Term 2", "2027,2": "Term 3", "2027,3": "Term 3", "2027,4": "Term 4", "2027,5": "Term 4", "2027,6": "Term 4", "2027,7": "Resit period", "2027,8": "Education free period"};
-const COLORS={
-lecture:["#DCEBFA","#214C7E","Lectures"],
-assessment:["#F8DDDD","#813737","Assessment / evaluation / resits"],
-free:["#DFF1E6","#286044","Teaching-free / self-study / grading"],
-recess:["#FFF0C9","#735615","Recess"],
-special:["#E8DEF8","#5A4189","Special dates"],
-holiday:["#ECEFF3","#4B5563","Public holiday / no class"]
-};
-let page=0, perPage=4;
-function date(s){let a=s.split("-").map(Number);return new Date(Date.UTC(a[0],a[1]-1,a[2]));}
-function render(){
- const root=document.getElementById("months");root.innerHTML="";
- MONTHS.slice(page*perPage,page*perPage+perPage).forEach(function(m){
-  const y=m[0],mo=m[1],term=m[2],first=new Date(Date.UTC(y,mo-1,1));
-  let start=new Date(first);start.setUTCDate(1-((first.getUTCDay()+6)%7));
-  const sec=document.createElement("section");sec.className="month";
-  sec.innerHTML='<div class="head"><span class="monthname">'+first.toLocaleDateString("en-GB",{month:"long",year:"numeric",timeZone:"UTC"})+'</span><span class="term">'+term+'</span></div><div class="weekdays">'+["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(x=>'<div class="weekday">'+x+'</div>').join("")+'</div><div class="days"></div>';
-  const days=sec.querySelector(".days");
-  for(let i=0;i<42;i++){
-   let cur=new Date(start);cur.setUTCDate(start.getUTCDate()+i);
-   const cell=document.createElement("div");cell.className="day";
-   if(cur.getUTCMonth()!==mo-1){cell.classList.add("outside");cell.innerHTML="<div class='num'>"+cur.getUTCDate()+"</div>";days.appendChild(cell);continue;}
-   cell.innerHTML="<div class='num'>"+cur.getUTCDate()+"</div>";
-   EVENTS.filter(e=>date(e[0])<=cur&&date(e[1])>=cur).slice(0,3).forEach(function(e){
-    const ev=document.createElement("div");ev.className="event";ev.textContent=e[2];ev.style.background=COLORS[e[3]][0];ev.style.color=COLORS[e[3]][1];cell.appendChild(ev);
-   });
-   days.appendChild(cell);
-  }
-  root.appendChild(sec);
- });
- document.getElementById("prev").disabled=page===0;
- document.getElementById("next").disabled=(page+1)*perPage>=MONTHS.length;
-}
-Object.keys(COLORS).forEach(function(k){let s=document.createElement("span");s.textContent=COLORS[k][2];s.style.background=COLORS[k][0];s.style.color=COLORS[k][1];document.getElementById("legend").appendChild(s)});
-document.getElementById("prev").onclick=function(){if(page>0){page--;render()}};
-document.getElementById("next").onclick=function(){if((page+1)*perPage<MONTHS.length){page++;render()}};
-document.getElementById("print").onclick=function(){window.print()};
-render();
-</script>
+<body class="min-h-full flex flex-col font-sans text-slate-800 bg-slate-100 antialiased selection:bg-teal-500 selection:text-white">
+
+    <!-- Navigation / Header -->
+    <header class="bg-slate-900/95 backdrop-blur-md text-white shadow-lg border-b border-teal-500/30 sticky top-0 z-30 no-print">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3.5">
+            <div class="flex items-center justify-between gap-2 sm:gap-4">
+                
+                <!-- Brand & Logo -->
+                <div class="flex items-center space-x-2.5 sm:space-x-3.5 min-w-0">
+                    <div class="w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-br from-teal-500 to-teal-700 rounded-xl flex-shrink-0 flex items-center justify-center text-white font-black text-sm sm:text-base shadow-md ring-1 ring-white/20">
+                        <span class="font-serif tracking-tight">EUR</span>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[10px] sm:text-xs font-bold tracking-wider text-teal-400 uppercase truncate">ESHCC</span>
+                            <span class="text-[10px] text-slate-400 hidden sm:inline">• Erasmus University</span>
+                            <span class="px-1.5 py-0.2 text-[9px] font-semibold bg-teal-500/20 text-teal-300 rounded border border-teal-500/30">26–27</span>
+                        </div>
+                        <h1 class="text-xs sm:text-lg font-bold tracking-tight text-white font-serif truncate">Academic Calendar</h1>
+                    </div>
+                </div>
+
+                <!-- Header Action Buttons -->
+                <div class="flex items-center gap-1.5 sm:gap-2 action-buttons flex-shrink-0">
+                    
+                    <!-- AI Assistant Quick Launch -->
+                    <button onclick="switchView('ai')" class="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 active:scale-95 text-white font-bold text-xs px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-lg shadow-md transition">
+                        <i class="fa-solid fa-wand-magic-sparkles text-amber-300 text-xs"></i>
+                        <span class="hidden sm:inline">AI Hub</span>
+                    </button>
+
+                    <!-- Add Note Button -->
+                    <button onclick="openNoteModal()" class="inline-flex items-center justify-center gap-1.5 bg-amber-500 hover:bg-amber-400 active:scale-95 text-slate-950 font-bold text-xs px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-lg shadow transition">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span class="hidden sm:inline">Add Note</span>
+                    </button>
+
+                    <!-- Export Dropdown -->
+                    <div class="relative group">
+                        <button class="inline-flex items-center justify-center gap-1 bg-slate-800 hover:bg-slate-700 active:bg-slate-700 border border-slate-700 text-slate-200 font-medium text-xs px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-lg transition">
+                            <i class="fa-solid fa-download text-teal-400 text-xs"></i>
+                            <span class="hidden sm:inline">Export</span>
+                            <i class="fa-solid fa-chevron-down text-[9px] ml-0.5 opacity-70"></i>
+                        </button>
+                        
+                        <!-- Dropdown Options -->
+                        <div class="absolute right-0 mt-1 w-44 bg-slate-900 border border-slate-700 rounded-xl shadow-xl py-1 hidden group-hover:block group-focus-within:block z-50">
+                            <button onclick="exportToPDF()" class="w-full text-left px-3.5 py-2 text-xs text-slate-200 hover:bg-slate-800 flex items-center gap-2 transition">
+                                <i class="fa-solid fa-file-pdf text-rose-400"></i>
+                                <span>Export PDF</span>
+                            </button>
+                            <button onclick="downloadHTML()" class="w-full text-left px-3.5 py-2 text-xs text-slate-200 hover:bg-slate-800 flex items-center gap-2 transition">
+                                <i class="fa-solid fa-code text-emerald-400"></i>
+                                <span>Download HTML</span>
+                            </button>
+                            <button onclick="window.print()" class="w-full text-left px-3.5 py-2 text-xs text-slate-200 hover:bg-slate-800 flex items-center gap-2 transition border-t border-slate-800">
+                                <i class="fa-solid fa-print text-slate-400"></i>
+                                <span>Print Schedule</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 print-container space-y-4 sm:space-y-6">
+
+        <!-- Print-only Header -->
+        <div class="print-header mb-6 pb-4 border-b border-slate-300 text-center">
+            <h1 class="text-2xl font-bold font-serif text-slate-900">Erasmus School of History, Culture and Communication</h1>
+            <p class="text-lg text-slate-700 font-semibold">Academic Calendar 2026–2027</p>
+            <p class="text-xs text-slate-500 mt-1">Erasmus University Rotterdam — Official Schedule</p>
+        </div>
+
+        <!-- Academic Summary Grid Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 no-print">
+            <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs flex items-center gap-2.5 sm:gap-3">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-sm sm:text-lg flex-shrink-0">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="min-w-0">
+                    <div class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">Academic Terms</div>
+                    <div class="text-xs sm:text-sm font-bold text-slate-800 truncate">4 Terms + Resit</div>
+                </div>
+            </div>
+            <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs flex items-center gap-2.5 sm:gap-3">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-sm sm:text-lg flex-shrink-0">
+                    <i class="fa-solid fa-file-signature"></i>
+                </div>
+                <div class="min-w-0">
+                    <div class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">Assessment</div>
+                    <div class="text-xs sm:text-sm font-bold text-slate-800 truncate">4 Main Weeks</div>
+                </div>
+            </div>
+            <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs flex items-center gap-2.5 sm:gap-3">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center text-sm sm:text-lg flex-shrink-0">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <div class="min-w-0">
+                    <div class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">Teaching-Free</div>
+                    <div class="text-xs sm:text-sm font-bold text-slate-800 truncate">5 Self-Study Wks</div>
+                </div>
+            </div>
+            <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-xs flex items-center gap-2.5 sm:gap-3">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center text-sm sm:text-lg flex-shrink-0">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <div class="min-w-0">
+                    <div class="text-[10px] sm:text-xs text-slate-500 font-medium truncate">AI Assistant</div>
+                    <div class="text-xs sm:text-sm font-bold text-purple-800 truncate">Gemini 3 Flash</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Toolbar -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-xs p-3 sm:p-4 no-print space-y-3">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                
+                <!-- View Navigation Tabs -->
+                <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1 lg:pb-0 -mx-1 px-1">
+                    <button onclick="switchView('month')" id="tab-month" class="view-tab active flex-shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs font-semibold transition bg-eur-navy text-white shadow-xs">
+                        <i class="fa-solid fa-calendar-days mr-1.5"></i> Month Grid
+                    </button>
+                    <button onclick="switchView('terms')" id="tab-terms" class="view-tab flex-shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs font-semibold transition text-slate-600 hover:bg-slate-100">
+                        <i class="fa-solid fa-layer-group mr-1.5"></i> Terms
+                    </button>
+                    <button onclick="switchView('table')" id="tab-table" class="view-tab flex-shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs font-semibold transition text-slate-600 hover:bg-slate-100">
+                        <i class="fa-solid fa-table-list mr-1.5"></i> Master Table
+                    </button>
+                    <button onclick="switchView('holidays')" id="tab-holidays" class="view-tab flex-shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs font-semibold transition text-slate-600 hover:bg-slate-100">
+                        <i class="fa-solid fa-star mr-1.5"></i> Holidays & Special
+                    </button>
+                    <button onclick="switchView('ai')" id="tab-ai" class="view-tab flex-shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs font-semibold transition text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-purple-600"></i> AI Assistant
+                    </button>
+                </div>
+
+                <!-- Search and Jump To Month Selectors -->
+                <div class="flex flex-row items-center gap-2">
+                    <!-- Search Input -->
+                    <div class="relative flex-grow sm:w-60">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Search calendar..." class="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-eur-green focus:border-eur-green outline-none">
+                    </div>
+
+                    <!-- Jump To Month Dropdown -->
+                    <select id="monthJumpSelect" onchange="jumpToMonth(this.value)" class="py-1.5 px-2.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-eur-green focus:border-eur-green bg-white text-slate-700 font-medium">
+                        <option value="">Jump Month...</option>
+                        <option value="2026-08">Aug 2026</option>
+                        <option value="2026-09">Sep 2026</option>
+                        <option value="2026-10">Oct 2026</option>
+                        <option value="2026-11">Nov 2026</option>
+                        <option value="2026-12">Dec 2026</option>
+                        <option value="2027-01">Jan 2027</option>
+                        <option value="2027-02">Feb 2027</option>
+                        <option value="2027-03">Mar 2027</option>
+                        <option value="2027-04">Apr 2027</option>
+                        <option value="2027-05">May 2027</option>
+                        <option value="2027-06">Jun 2027</option>
+                        <option value="2027-07">Jul 2027</option>
+                        <option value="2027-08">Aug 2027</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Scrollable Filter Pills -->
+            <div class="pt-2 border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs">
+                <span class="font-semibold text-slate-400 mr-1 text-[11px] uppercase tracking-wider flex-shrink-0">Filter:</span>
+                
+                <button onclick="toggleFilter('all')" id="filter-all" class="filter-pill active flex-shrink-0 px-2.5 py-1 rounded-full border border-slate-300 bg-slate-800 text-white text-[11px] font-medium transition">
+                    All
+                </button>
+                <button onclick="toggleFilter('lecture')" id="filter-lecture" class="filter-pill flex-shrink-0 px-2.5 py-1 rounded-full border border-blue-300 bg-blue-50 text-blue-700 text-[11px] font-medium hover:bg-blue-100 transition">
+                    <span class="w-2 h-2 rounded-full bg-blue-600 inline-block mr-1"></span> Lectures
+                </button>
+                <button onclick="toggleFilter('assessment')" id="filter-assessment" class="filter-pill flex-shrink-0 px-2.5 py-1 rounded-full border border-amber-300 bg-amber-50 text-amber-700 text-[11px] font-medium hover:bg-amber-100 transition">
+                    <span class="w-2 h-2 rounded-full bg-amber-600 inline-block mr-1"></span> Assessment
+                </button>
+                <button onclick="toggleFilter('teaching-free')" id="filter-teaching-free" class="filter-pill flex-shrink-0 px-2.5 py-1 rounded-full border border-teal-300 bg-teal-50 text-teal-700 text-[11px] font-medium hover:bg-teal-100 transition">
+                    <span class="w-2 h-2 rounded-full bg-teal-600 inline-block mr-1"></span> Teaching-Free
+                </button>
+                <button onclick="toggleFilter('recess')" id="filter-recess" class="filter-pill flex-shrink-0 px-2.5 py-1 rounded-full border border-slate-300 bg-slate-100 text-slate-700 text-[11px] font-medium hover:bg-slate-200 transition">
+                    <span class="w-2 h-2 rounded-full bg-slate-500 inline-block mr-1"></span> Recess
+                </button>
+                <button onclick="toggleFilter('holiday')" id="filter-holiday" class="filter-pill flex-shrink-0 px-2.5 py-1 rounded-full border border-rose-300 bg-rose-50 text-rose-700 text-[11px] font-medium hover:bg-rose-100 transition">
+                    <span class="w-2 h-2 rounded-full bg-rose-600 inline-block mr-1"></span> Public Holiday
+                </button>
+                <button onclick="toggleFilter('special')" id="filter-special" class="filter-pill flex-shrink-0 px-2.5 py-1 rounded-full border border-purple-300 bg-purple-50 text-purple-700 text-[11px] font-medium hover:bg-purple-100 transition">
+                    <span class="w-2 h-2 rounded-full bg-purple-600 inline-block mr-1"></span> Special Dates
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW 1: MONTH-BY-MONTH GRID VIEW -->
+        <div id="view-month" class="view-content space-y-6 sm:space-y-8">
+            <!-- Rendered dynamically -->
+        </div>
+
+        <!-- VIEW 2: TERM BREAKDOWN VIEW -->
+        <div id="view-terms" class="view-content hidden space-y-6">
+            <!-- Rendered dynamically -->
+        </div>
+
+        <!-- VIEW 3: MASTER SCHEDULE TABLE -->
+        <div id="view-table" class="view-content hidden">
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-base font-bold text-slate-800">Complete ESHCC Academic Schedule Table 2026–2027</h2>
+                        <p class="text-xs text-slate-500">Exact duplicate of official ESHCC academic calendar records</p>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm">
+                        <thead class="bg-slate-100 text-slate-700 uppercase font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="py-3 px-4">Calendar Week</th>
+                                <th class="py-3 px-4">Term & Week</th>
+                                <th class="py-3 px-4">Date Period</th>
+                                <th class="py-3 px-4">Academic Activity / Notes</th>
+                                <th class="py-3 px-4 text-center">Category</th>
+                            </tr>
+                        </thead>
+                        <tbody id="masterTableBody" class="divide-y divide-slate-200">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 4: SPECIAL DATES & HOLIDAYS -->
+        <div id="view-holidays" class="view-content hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Holidays Table -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-9 h-9 rounded-lg bg-rose-100 text-rose-700 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-umbrella-beach"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-slate-800">Public Holidays & No-Class Days</h3>
+                            <p class="text-xs text-slate-500">Official university closure days</p>
+                        </div>
+                    </div>
+                    <div class="divide-y divide-slate-100" id="holidaysListContainer">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Special Milestones -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-9 h-9 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-slate-800">Special Dates & Intros</h3>
+                            <p class="text-xs text-slate-500">Eurekaweek, Introductions & Academic Year Start/End</p>
+                        </div>
+                    </div>
+                    <div class="divide-y divide-slate-100" id="specialDatesListContainer">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 5: GEMINI AI ASSISTANT & TOOLS -->
+        <div id="view-ai" class="view-content hidden space-y-6">
+            <!-- Hero AI Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 rounded-2xl p-6 text-white shadow-xl border border-purple-500/20 relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="max-w-3xl space-y-2">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/30 text-purple-300 text-xs font-semibold">
+                        <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> Powered by Gemini 3 Flash
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-bold font-serif text-white">ESHCC Academic AI Assistant & Study Tools</h2>
+                    <p class="text-xs sm:text-sm text-slate-300">
+                        Get search-grounded answers about ESHCC course schedules, parse syllabus deadlines automatically into your calendar, or generate personalized weekly study plans.
+                    </p>
+                </div>
+            </div>
+
+            <!-- AI Features Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Tool 1: Grounded Academic Advisor Chat -->
+                <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
+                    <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
+                        <div class="w-9 h-9 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-slate-800">Grounded Academic Advisor</h3>
+                            <p class="text-xs text-slate-500">Ask questions with live Google Search grounding</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Prompts -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs pb-1">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 mr-1 flex-shrink-0">Quick Ask:</span>
+                        <button onclick="askGeminiAdvisor('How should I structure my revision during ESHCC Term 1 assessment week?')" class="px-2.5 py-1 bg-slate-100 hover:bg-purple-100 hover:text-purple-800 text-slate-700 rounded-lg text-[11px] whitespace-nowrap transition">
+                            <i class="fa-solid fa-lightbulb mr-1 text-amber-500"></i> Assessment Prep
+                        </button>
+                        <button onclick="askGeminiAdvisor('What are the best quiet study spots and cafes near EUR Campus Woudestein in Rotterdam?')" class="px-2.5 py-1 bg-slate-100 hover:bg-purple-100 hover:text-purple-800 text-slate-700 rounded-lg text-[11px] whitespace-nowrap transition">
+                            <i class="fa-solid fa-location-dot mr-1 text-teal-600"></i> Campus Study Spots
+                        </button>
+                        <button onclick="askGeminiAdvisor('Explain ESHCC resit policies and BA1 priority resit rules at Erasmus University Rotterdam.')" class="px-2.5 py-1 bg-slate-100 hover:bg-purple-100 hover:text-purple-800 text-slate-700 rounded-lg text-[11px] whitespace-nowrap transition">
+                            <i class="fa-solid fa-circle-question mr-1 text-blue-600"></i> Resit Rules
+                        </button>
+                    </div>
+
+                    <!-- Question Input -->
+                    <div class="flex gap-2">
+                        <input type="text" id="aiQueryInput" placeholder="Ask anything about ESHCC courses, exams, campus life, or term schedules..." class="flex-grow p-2.5 text-xs sm:text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none">
+                        <button onclick="askGeminiAdvisor()" class="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition flex items-center gap-1.5 flex-shrink-0">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span class="hidden sm:inline">Ask AI</span>
+                        </button>
+                    </div>
+
+                    <!-- Output Box -->
+                    <div class="relative min-h-[140px] bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs sm:text-sm text-slate-700 space-y-2">
+                        <div id="aiAdvisorLoading" class="hidden absolute inset-0 bg-slate-50/90 backdrop-blur-xs rounded-xl flex items-center justify-center gap-2 text-purple-700 font-semibold z-10">
+                            <i class="fa-solid fa-spinner animate-spin text-lg"></i>
+                            <span>Searching live sources & generating answer...</span>
+                        </div>
+                        <div id="aiAdvisorOutput" class="prose prose-slate max-w-none">
+                            <p class="text-slate-400 italic">Select a quick prompt above or type a question to consult the AI academic advisor.</p>
+                        </div>
+                        <div id="aiAdvisorSources"></div>
+                    </div>
+                </div>
+
+                <!-- Tool 2: Syllabus & Assignment Parser (JSON Extractor) -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
+                    <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
+                        <div class="w-9 h-9 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-file-import"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-bold text-slate-800">Syllabus Date Extractor</h3>
+                            <p class="text-xs text-slate-500">Auto-convert syllabus text into calendar notes</p>
+                        </div>
+                    </div>
+
+                    <p class="text-xs text-slate-600">Paste course deadline text or syllabus excerpts below to extract dates automatically using Gemini structured JSON.</p>
+
+                    <textarea id="syllabusInput" rows="4" placeholder="Paste syllabus text here (e.g. 'Midterm Essay due October 15th, Final Presentation Nov 3rd 2026')..." class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none"></textarea>
+
+                    <button onclick="parseSyllabusWithGemini()" class="w-full bg-teal-600 hover:bg-teal-700 active:scale-95 text-white font-bold text-xs py-2.5 rounded-xl shadow transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bolt"></i> Extract Deadlines
+                    </button>
+
+                    <div id="syllabusLoading" class="hidden text-center py-3 text-xs text-teal-700 font-semibold">
+                        <i class="fa-solid fa-spinner animate-spin mr-1"></i> Extracting dates with Structured Gemini AI...
+                    </div>
+
+                    <div id="syllabusResults" class="space-y-2 max-h-60 overflow-y-auto"></div>
+                </div>
+
+            </div>
+
+            <!-- Tool 3: Weekly Study Timetable Generator -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-4">
+                <div class="flex items-center space-x-3 border-b border-slate-100 pb-3">
+                    <div class="w-9 h-9 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800">Personalized Weekly Study Planner</h3>
+                        <p class="text-xs text-slate-500">Generate a tailored 7-day study timetable for any calendar week</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Select Calendar Week</label>
+                        <select id="aiWeekSelect" class="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Your Courses / Topics</label>
+                        <input type="text" id="aiCoursesInput" placeholder="e.g. Media & Communication, History Theory" class="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Weekly Focus Goal</label>
+                        <input type="text" id="aiGoalInput" placeholder="e.g. Prepare essay outline & revise for quiz" class="w-full p-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+                    </div>
+                </div>
+
+                <button onclick="generateWeeklyStudyPlan()" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow transition flex items-center gap-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Generate 7-Day Study Timetable
+                </button>
+
+                <div id="studyPlanLoading" class="hidden text-center py-4 text-xs text-blue-700 font-semibold">
+                    <i class="fa-solid fa-spinner animate-spin mr-1"></i> Designing tailored study schedule...
+                </div>
+
+                <div id="studyPlanOutput" class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs sm:text-sm text-slate-800 min-h-[100px] prose prose-slate max-w-none">
+                    <p class="text-slate-400 italic">Select a week above and click generate to create a custom study plan.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Modal: Date Details / Custom Notes Sheet -->
+    <div id="noteModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 hidden modal-backdrop">
+        <div class="bg-white rounded-t-2xl sm:rounded-xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200 transform transition-all max-h-[90vh] flex flex-col">
+            <div class="bg-slate-900 text-white p-3.5 sm:p-4 flex items-center justify-between">
+                <div class="flex items-center space-x-2 min-w-0">
+                    <i class="fa-solid fa-calendar-day text-teal-400 text-sm"></i>
+                    <h3 class="font-bold text-sm sm:text-base font-serif truncate" id="modalTitle">Date Details & Custom Notes</h3>
+                </div>
+                <button onclick="closeNoteModal()" class="text-slate-400 hover:text-white transition p-1 text-base">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-4 sm:p-6 space-y-3 sm:space-y-4 overflow-y-auto">
+                <!-- Date Details -->
+                <div id="modalDateInfo" class="p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs sm:text-sm">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <!-- AI Quick Draft Button -->
+                <div class="flex justify-between items-center bg-purple-50 p-2.5 rounded-lg border border-purple-200">
+                    <span class="text-xs text-purple-900 font-medium"><i class="fa-solid fa-wand-magic-sparkles text-purple-600 mr-1"></i> Need a study reminder?</span>
+                    <button onclick="generateAINoteForDate()" id="btnAiDraftNote" class="px-2.5 py-1 bg-purple-600 hover:bg-purple-700 active:scale-95 text-white text-[11px] font-bold rounded-md shadow transition">
+                        Generate AI Note
+                    </button>
+                </div>
+
+                <!-- Custom Note Form -->
+                <div>
+                    <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        Personal Study Note / Reminder
+                    </label>
+                    <textarea id="modalNoteText" rows="3" placeholder="Add custom notes, submission deadlines, or exam reminders..." class="w-full p-2.5 text-xs sm:text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-eur-green focus:border-eur-green outline-none"></textarea>
+                </div>
+            </div>
+            <div class="bg-slate-50 px-4 sm:px-6 py-3 border-t border-slate-200 flex items-center justify-between mt-auto">
+                <button onclick="clearUserNote()" id="btnDeleteNote" class="text-xs text-rose-600 hover:text-rose-800 font-semibold hidden">
+                    <i class="fa-solid fa-trash mr-1"></i> Clear
+                </button>
+                <div class="flex items-center space-x-2 ml-auto">
+                    <button onclick="closeNoteModal()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-200 transition">
+                        Cancel
+                    </button>
+                    <button onclick="saveUserNote()" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-eur-green hover:bg-teal-700 text-white shadow transition">
+                        Save Note
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Export PDF Progress -->
+    <div id="pdfExportModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full text-center space-y-4">
+            <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto text-2xl animate-bounce">
+                <i class="fa-solid fa-file-pdf"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-800">Generating Print-Ready PDF</h3>
+            <p class="text-xs text-slate-500">Creating high-resolution PDF file of ESHCC Academic Calendar 2026–2027...</p>
+            <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                <div class="bg-rose-600 h-full w-full animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // OFFICIAL ESHCC ACADEMIC CALENDAR DATA (Strictly sourced from academic-calendar-eshcc-2026-2027.pdf)
+        const ESHCC_DATA = [
+            // Term 1
+            { cw: "35", term: "Term 1", termWk: "Intro Week", start: "2026-08-24", end: "2026-08-30", activity: "Introduction new students", type: "special" },
+            { cw: "36", term: "Term 1", termWk: "Term 1, Wk 1", start: "2026-08-31", end: "2026-09-04", activity: "Lectures", type: "lecture" },
+            { cw: "37", term: "Term 1", termWk: "Term 1, Wk 2", start: "2026-09-07", end: "2026-09-11", activity: "Lectures", type: "lecture" },
+            { cw: "38", term: "Term 1", termWk: "Term 1, Wk 3", start: "2026-09-14", end: "2026-09-18", activity: "Lectures", type: "lecture" },
+            { cw: "39", term: "Term 1", termWk: "Term 1, Wk 4", start: "2026-09-21", end: "2026-09-25", activity: "Lectures", type: "lecture" },
+            { cw: "40", term: "Term 1", termWk: "Term 1, Wk 5", start: "2026-09-28", end: "2026-10-02", activity: "Lectures", type: "lecture" },
+            { cw: "41", term: "Term 1", termWk: "Term 1, Wk 6", start: "2026-10-05", end: "2026-10-09", activity: "Lectures", type: "lecture" },
+            { cw: "42", term: "Term 1", termWk: "Term 1, Wk 7", start: "2026-10-12", end: "2026-10-16", activity: "Lectures", type: "lecture" },
+            { cw: "43", term: "Term 1", termWk: "Term 1, Wk 8", start: "2026-10-19", end: "2026-10-23", activity: "Lectures", type: "lecture" },
+            { cw: "44", term: "Term 1", termWk: "Term 1, Wk 9", start: "2026-10-26", end: "2026-10-30", activity: "Teaching-free week / self-study", type: "teaching-free" },
+            { cw: "45", term: "Term 1", termWk: "Term 1, Wk 10", start: "2026-11-02", end: "2026-11-06", activity: "Assessment and evaluation week", type: "assessment" },
+
+            // Term 2
+            { cw: "46", term: "Term 2", termWk: "Term 2, Wk 1", start: "2026-11-09", end: "2026-11-13", activity: "Lectures", type: "lecture" },
+            { cw: "47", term: "Term 2", termWk: "Term 2, Wk 2", start: "2026-11-16", end: "2026-11-20", activity: "Lectures", type: "lecture" },
+            { cw: "48", term: "Term 2", termWk: "Term 2, Wk 3", start: "2026-11-23", end: "2026-11-27", activity: "Lectures", type: "lecture" },
+            { cw: "49", term: "Term 2", termWk: "Term 2, Wk 4", start: "2026-11-30", end: "2026-12-04", activity: "Lectures", type: "lecture" },
+            { cw: "50", term: "Term 2", termWk: "Term 2, Wk 5", start: "2026-12-07", end: "2026-12-11", activity: "Lectures", type: "lecture" },
+            { cw: "51", term: "Term 2", termWk: "Term 2, Wk 6", start: "2026-12-14", end: "2026-12-18", activity: "Teaching-free week / self-study", type: "teaching-free" },
+            { cw: "52", term: "Term 2", termWk: "Winter Recess", start: "2026-12-21", end: "2026-12-25", activity: "Winter recess", type: "recess" },
+            { cw: "53", term: "Term 2", termWk: "Winter Recess", start: "2026-12-28", end: "2027-01-01", activity: "Winter recess", type: "recess" },
+            { cw: "01", term: "Term 2", termWk: "Term 2, Wk 7", start: "2027-01-04", end: "2027-01-08", activity: "Lectures", type: "lecture" },
+            { cw: "02", term: "Term 2", termWk: "Term 2, Wk 8", start: "2027-01-11", end: "2027-01-15", activity: "Lectures", type: "lecture" },
+            { cw: "03", term: "Term 2", termWk: "Term 2, Wk 9", start: "2027-01-18", end: "2027-01-22", activity: "Lectures", type: "lecture" },
+            { cw: "04", term: "Term 2", termWk: "Term 2, Wk 10", start: "2027-01-25", end: "2027-01-29", activity: "Assessment and evaluation week", type: "assessment" },
+
+            // Term 3
+            { cw: "05", term: "Term 3", termWk: "Term 3, Wk 1", start: "2027-02-01", end: "2027-02-05", activity: "Lectures", type: "lecture" },
+            { cw: "06", term: "Term 3", termWk: "Term 3, Wk 2", start: "2027-02-08", end: "2027-02-12", activity: "Lectures", type: "lecture" },
+            { cw: "07", term: "Term 3", termWk: "Term 3, Wk 3", start: "2027-02-15", end: "2027-02-19", activity: "Lectures", type: "lecture" },
+            { cw: "08", term: "Term 3", termWk: "Term 3, Wk 4", start: "2027-02-22", end: "2027-02-26", activity: "Lectures", type: "lecture" },
+            { cw: "09", term: "Term 3", termWk: "Term 3, Wk 5", start: "2027-03-01", end: "2027-03-05", activity: "Lectures", type: "lecture" },
+            { cw: "10", term: "Term 3", termWk: "Term 3, Wk 6", start: "2027-03-08", end: "2027-03-12", activity: "Lectures", type: "lecture" },
+            { cw: "11", term: "Term 3", termWk: "Term 3, Wk 7", start: "2027-03-15", end: "2027-03-19", activity: "Lectures", type: "lecture" },
+            { cw: "12", term: "Term 3", termWk: "Term 3, Wk 8", start: "2027-03-22", end: "2027-03-26", activity: "Lectures", notes: "No class Friday (Good Friday)", type: "lecture" },
+            { cw: "13", term: "Term 3", termWk: "Term 3, Wk 9", start: "2027-03-29", end: "2027-04-02", activity: "Teaching-free week / self-study", notes: "Easter Monday", type: "teaching-free" },
+            { cw: "14", term: "Term 3", termWk: "Term 3, Wk 10", start: "2027-04-05", end: "2027-04-09", activity: "Assessment and evaluation week (+ resits for exchange)", type: "assessment" },
+
+            // Term 4
+            { cw: "15", term: "Term 4", termWk: "Term 4, Wk 1", start: "2027-04-12", end: "2027-04-16", activity: "Lectures", type: "lecture" },
+            { cw: "16", term: "Term 4", termWk: "Term 4, Wk 2", start: "2027-04-19", end: "2027-04-23", activity: "Lectures", type: "lecture" },
+            { cw: "17", term: "Term 4", termWk: "Term 4, Wk 3", start: "2027-04-26", end: "2027-04-30", activity: "Lectures", notes: "No class Tuesday (Kings Day)", type: "lecture" },
+            { cw: "18", term: "Term 4", termWk: "Term 4, Wk 4", start: "2027-05-03", end: "2027-05-07", activity: "Lectures", notes: "No class Wednesday (Liberation Day), no class Thursday (Ascension Day)", type: "lecture" },
+            { cw: "19", term: "Term 4", termWk: "Term 4, Wk 5", start: "2027-05-10", end: "2027-05-14", activity: "Lectures", type: "lecture" },
+            { cw: "20", term: "Term 4", termWk: "Term 4, Wk 6", start: "2027-05-17", end: "2027-05-21", activity: "Lectures", notes: "No class Monday (Whit Monday)", type: "lecture" },
+            { cw: "21", term: "Term 4", termWk: "Term 4, Wk 7", start: "2027-05-24", end: "2027-05-28", activity: "Lectures", type: "lecture" },
+            { cw: "22", term: "Term 4", termWk: "Term 4, Wk 8", start: "2027-05-31", end: "2027-06-04", activity: "Lectures", type: "lecture" },
+            { cw: "23", term: "Term 4", termWk: "Term 4, Wk 9", start: "2027-06-07", end: "2027-06-11", activity: "Lectures", type: "lecture" },
+            { cw: "24", term: "Term 4", termWk: "Term 4, Wk 10", start: "2027-06-14", end: "2027-06-18", activity: "Teaching-free week / self-study", type: "teaching-free" },
+            { cw: "25", term: "Term 4", termWk: "Term 4, Wk 11", start: "2027-06-21", end: "2027-06-25", activity: "Assessment and evaluation week", type: "assessment" },
+
+            // Resit Period
+            { cw: "26", term: "Resit", termWk: "Resit Wk 1", start: "2027-06-28", end: "2027-07-02", activity: "Resit BA1 (priority) and BA2/3", type: "assessment" },
+            { cw: "27", term: "Resit", termWk: "Resit Wk 2", start: "2027-07-05", end: "2027-07-09", activity: "Resit minors + resit BA2/3 + BA1 term 4", type: "assessment" },
+            { cw: "28", term: "Resit", termWk: "Grading Wk", start: "2027-07-12", end: "2027-07-16", activity: "Teaching-free week / grading", type: "teaching-free" },
+
+            // Summer Recess
+            { cw: "29", term: "Summer", termWk: "Recess Wk 1", start: "2027-07-19", end: "2027-07-23", activity: "Summer recess", type: "recess" },
+            { cw: "30", term: "Summer", termWk: "Recess Wk 2", start: "2027-07-26", end: "2027-07-30", activity: "Summer recess", type: "recess" },
+            { cw: "31", term: "Summer", termWk: "Recess Wk 3", start: "2027-08-02", end: "2027-08-06", activity: "Summer recess", type: "recess" },
+            { cw: "32", term: "Summer", termWk: "Recess Wk 4", start: "2027-08-09", end: "2027-08-13", activity: "Summer recess", type: "recess" },
+
+            // Preview 2027-2028
+            { cw: "33", term: "2027-28", termWk: "Eurekaweek", start: "2027-08-16", end: "2027-08-20", activity: "Eurekaweek 2027", type: "special" },
+            { cw: "34", term: "2027-28", termWk: "Intro Week", start: "2027-08-23", end: "2027-08-29", activity: "Introduction new students", type: "special" },
+            { cw: "35", term: "2027-28", termWk: "Term 1, Wk 1", start: "2027-08-30", end: "2027-09-03", activity: "Start academic year 2027-2028", type: "special" },
+        ];
+
+        // SPECIAL HOLIDAYS & NO-CLASS DATES
+        const SPECIFIC_HOLIDAYS = [
+            { date: "2026-08-17", end: "2026-08-23", name: "Eurekaweek 2026", desc: "Orientation Week", type: "special" },
+            { date: "2026-08-24", end: "2026-08-30", name: "Introduction Week", desc: "Student associations + new students", type: "special" },
+            { date: "2026-08-31", name: "Start Academic Year", desc: "Official opening of 2026-2027", type: "special" },
+            { date: "2026-12-21", end: "2027-01-03", name: "Winter Holiday", desc: "University Closure", type: "recess" },
+            { date: "2027-03-26", name: "Good Friday", desc: "No class Friday", type: "holiday" },
+            { date: "2027-03-29", name: "Easter Monday", desc: "Public Holiday", type: "holiday" },
+            { date: "2027-04-27", name: "Kings Day", desc: "No class Tuesday", type: "holiday" },
+            { date: "2027-05-05", name: "Liberation Day", desc: "No class Wednesday", type: "holiday" },
+            { date: "2027-05-06", name: "Ascension Day", desc: "No class Thursday", type: "holiday" },
+            { date: "2027-05-17", name: "Whit Monday", desc: "No class Monday", type: "holiday" },
+            { date: "2027-07-19", end: "2027-08-15", name: "Summer Recess", desc: "Education Free Period", type: "recess" },
+            { date: "2027-08-16", end: "2027-08-20", name: "Eurekaweek 2027", desc: "Orientation Week 2027", type: "special" },
+            { date: "2027-08-30", name: "Start AY 2027–2028", desc: "Official start next academic year", type: "special" }
+        ];
+
+        // Months array for grid rendering
+        const MONTHS_TO_RENDER = [
+            { year: 2026, month: 7, name: "August 2026" },
+            { year: 2026, month: 8, name: "September 2026" },
+            { year: 2026, month: 9, name: "October 2026" },
+            { year: 2026, month: 10, name: "November 2026" },
+            { year: 2026, month: 11, name: "December 2026" },
+            { year: 2027, month: 0, name: "January 2027" },
+            { year: 2027, month: 1, name: "February 2027" },
+            { year: 2027, month: 2, name: "March 2027" },
+            { year: 2027, month: 3, name: "April 2027" },
+            { year: 2027, month: 4, name: "May 2027" },
+            { year: 2027, month: 5, name: "June 2027" },
+            { year: 2027, month: 6, name: "July 2027" },
+            { year: 2027, month: 7, name: "August 2027" }
+        ];
+
+        // Application State
+        let activeView = 'month';
+        let currentFilter = 'all';
+        let currentSearchQuery = '';
+        let userNotes = JSON.parse(localStorage.getItem('ESHCC_CALENDAR_NOTES') || '{}');
+        let selectedDayForModal = null;
+
+        // GEMINI API CALL WRAPPER WITH EXPONENTIAL BACKOFF
+        async function callGeminiAPI(payload, retries = 3) {
+            const apiKey = ""; // Canvas runtime provides actual key when empty
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            let delay = 1000;
+            
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (response.ok) {
+                        return await response.json();
+                    }
+                    if (response.status === 429 || response.status >= 500) {
+                        await new Promise(r => setTimeout(r, delay));
+                        delay *= 2;
+                        continue;
+                    }
+                    const errJson = await response.json().catch(() => ({}));
+                    throw new Error(errJson.error?.message || `API Request Failed (${response.status})`);
+                } catch (err) {
+                    if (i === retries - 1) throw err;
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        // HTML Escaper Helper
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        // Markdown Formatter Helper
+        function formatMarkdownToHTML(md) {
+            if (!md) return '';
+            let html = md
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`([^`]+)`/g, '<code class="bg-slate-100 text-teal-700 px-1 py-0.5 rounded font-mono text-xs">$1</code>')
+                .replace(/^### (.*$)/gim, '<h3 class="text-sm font-bold text-slate-900 mt-3 mb-1">$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2 class="text-base font-bold text-slate-900 mt-4 mb-2 border-b border-slate-200 pb-1">$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1 class="text-lg font-bold text-slate-900 mt-4 mb-2">$1</h1>')
+                .replace(/^\* (.*$)/gim, '<li class="ml-4 list-disc">$1</li>')
+                .replace(/^- (.*$)/gim, '<li class="ml-4 list-disc">$1</li>')
+                .replace(/\n\n/g, '<br><br>')
+                .replace(/\n/g, '<br>');
+            return html;
+        }
+
+        // FEATURE 1: ASK GEMINI ADVISOR (GROUNDED SEARCH)
+        async function askGeminiAdvisor(customQuery = null) {
+            const query = customQuery || document.getElementById('aiQueryInput').value.trim();
+            if (!query) return;
+
+            if (customQuery) {
+                document.getElementById('aiQueryInput').value = customQuery;
+            }
+
+            const outputEl = document.getElementById('aiAdvisorOutput');
+            const sourcesEl = document.getElementById('aiAdvisorSources');
+            const loadingEl = document.getElementById('aiAdvisorLoading');
+
+            loadingEl.classList.remove('hidden');
+            outputEl.innerHTML = '';
+            sourcesEl.innerHTML = '';
+
+            const systemPrompt = "You are an official ESHCC (Erasmus School of History, Culture and Communication) academic advisor at Erasmus University Rotterdam. Answer the student query accurately, concisely, and encouragingly. Use Google Search grounding to retrieve real-time information about EUR campus locations, study facilities in Rotterdam, or official academic policies.";
+
+            const payload = {
+                contents: [{ parts: [{ text: query }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            try {
+                const result = await callGeminiAPI(payload);
+                const candidate = result.candidates?.[0];
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    const text = candidate.content.parts[0].text;
+                    outputEl.innerHTML = formatMarkdownToHTML(text);
+
+                    // Render Citations / Grounding Attributions
+                    const groundingMetadata = candidate.groundingMetadata;
+                    if (groundingMetadata && groundingMetadata.groundingAttributions) {
+                        const sources = groundingMetadata.groundingAttributions
+                            .map(a => ({ uri: a.web?.uri, title: a.web?.title }))
+                            .filter(s => s.uri && s.title);
+
+                        if (sources.length > 0) {
+                            let sourcesHTML = `<div class="mt-4 pt-3 border-t border-slate-200 text-xs text-slate-500"><span class="font-bold text-slate-700">Verified Web Sources:</span><ul class="list-disc list-inside mt-1 space-y-1">`;
+                            sources.forEach(src => {
+                                sourcesHTML += `<li><a href="${src.uri}" target="_blank" rel="noopener noreferrer" class="text-purple-700 hover:underline"><i class="fa-solid fa-arrow-up-right-from-square text-[10px] mr-1"></i>${escapeHtml(src.title)}</a></li>`;
+                            });
+                            sourcesHTML += `</ul></div>`;
+                            sourcesEl.innerHTML = sourcesHTML;
+                        }
+                    }
+                } else {
+                    outputEl.innerHTML = `<span class="text-rose-600">No response received. Please try again.</span>`;
+                }
+            } catch(err) {
+                outputEl.innerHTML = `<span class="text-rose-600">Error: ${escapeHtml(err.message)}</span>`;
+            } finally {
+                loadingEl.classList.add('hidden');
+            }
+        }
+
+        // FEATURE 2: SYLLABUS & ASSIGNMENT DATE PARSER (STRUCTURED JSON)
+        async function parseSyllabusWithGemini() {
+            const rawText = document.getElementById('syllabusInput').value.trim();
+            if (!rawText) return;
+
+            const loadingEl = document.getElementById('syllabusLoading');
+            const resultsContainer = document.getElementById('syllabusResults');
+            loadingEl.classList.remove('hidden');
+            resultsContainer.innerHTML = '';
+
+            const payload = {
+                contents: [{ parts: [{ text: `Extract all deadlines, exams, assignments, or key academic dates from the following syllabus text:\n\n${rawText}` }] }],
+                systemInstruction: {
+                    parts: [{ text: "Extract course dates and deadlines for an Erasmus University Rotterdam student. Format as a JSON array of objects. Dates MUST be in YYYY-MM-DD format (assume academic year 2026-2027: Aug-Dec in 2026, Jan-Aug in 2027)." }]
+                },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "ARRAY",
+                        items: {
+                            type: "OBJECT",
+                            properties: {
+                                "date": { "type": "STRING" },
+                                "title": { "type": "STRING" },
+                                "details": { "type": "STRING" }
+                            },
+                            "propertyOrdering": ["date", "title", "details"]
+                        }
+                    }
+                }
+            };
+
+            try {
+                const result = await callGeminiAPI(payload);
+                const jsonText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (jsonText) {
+                    const parsedDates = JSON.parse(jsonText);
+                    if(parsedDates.length === 0) {
+                        resultsContainer.innerHTML = `<p class="text-xs text-slate-500 italic">No explicit dates found in text.</p>`;
+                        return;
+                    }
+
+                    let html = `<div class="p-2 bg-teal-50 border border-teal-200 rounded-lg space-y-2">`;
+                    html += `<div class="flex items-center justify-between text-xs font-bold text-teal-900 border-b border-teal-200 pb-1">
+                                <span>Extracted ${parsedDates.length} Milestone(s)</span>
+                                <button onclick="saveAllParsedDates()" class="text-[10px] bg-teal-700 text-white px-2 py-0.5 rounded shadow">Add All to Calendar</button>
+                             </div>`;
+
+                    parsedDates.forEach((item, idx) => {
+                        html += `
+                            <div class="p-2 bg-white rounded border border-teal-200 text-xs">
+                                <div class="flex justify-between font-bold text-slate-800">
+                                    <span>${escapeHtml(item.title)}</span>
+                                    <span class="text-teal-700 font-mono">${escapeHtml(item.date)}</span>
+                                </div>
+                                ${item.details ? `<p class="text-[11px] text-slate-600 mt-0.5">${escapeHtml(item.details)}</p>` : ''}
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+
+                    // Store temporary parsed items on element
+                    resultsContainer.dataset.parsed = JSON.stringify(parsedDates);
+                    resultsContainer.innerHTML = html;
+                } else {
+                    resultsContainer.innerHTML = `<p class="text-xs text-rose-600">Could not extract dates from the provided text.</p>`;
+                }
+            } catch(err) {
+                resultsContainer.innerHTML = `<p class="text-xs text-rose-600">Error: ${escapeHtml(err.message)}</p>`;
+            } finally {
+                loadingEl.classList.add('hidden');
+            }
+        }
+
+        function saveAllParsedDates() {
+            const resultsContainer = document.getElementById('syllabusResults');
+            if(!resultsContainer.dataset.parsed) return;
+            const items = JSON.parse(resultsContainer.dataset.parsed);
+
+            items.forEach(item => {
+                if (item.date && item.title) {
+                    const existing = userNotes[item.date] ? userNotes[item.date] + " | " : "";
+                    userNotes[item.date] = existing + `${item.title}${item.details ? ' (' + item.details + ')' : ''}`;
+                }
+            });
+
+            localStorage.setItem('ESHCC_CALENDAR_NOTES', JSON.stringify(userNotes));
+            resultsContainer.innerHTML = `<p class="text-xs text-emerald-700 font-bold p-2 bg-emerald-50 rounded border border-emerald-200"><i class="fa-solid fa-circle-check mr-1"></i> Added ${items.length} milestone note(s) to calendar!</p>`;
+            renderMonthGrid();
+        }
+
+        // FEATURE 3: WEEKLY STUDY TIMETABLE GENERATOR
+        async function generateWeeklyStudyPlan() {
+            const weekSelect = document.getElementById('aiWeekSelect').value;
+            const courses = document.getElementById('aiCoursesInput').value.trim() || 'ESHCC General Courses';
+            const goal = document.getElementById('aiGoalInput').value.trim() || 'Prepare coursework and lectures';
+
+            const loadingEl = document.getElementById('studyPlanLoading');
+            const outputEl = document.getElementById('studyPlanOutput');
+
+            loadingEl.classList.remove('hidden');
+            outputEl.innerHTML = '';
+
+            const weekObj = ESHCC_DATA.find(w => w.cw === weekSelect) || ESHCC_DATA[0];
+
+            const userPrompt = `Create a realistic 7-day study plan for Calendar Week ${weekObj.cw} (${weekObj.term}, ${weekObj.termWk}: ${weekObj.activity}) running from ${weekObj.start} to ${weekObj.end}.\n\nCourses: ${courses}\nGoals: ${goal}\n\nProvide a daily breakdown (Monday to Sunday) with time allocations, active recall study tips, and motivation tailored for an Erasmus University Rotterdam student.`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: {
+                    parts: [{ text: "You are an expert academic tutor at Erasmus University Rotterdam (ESHCC). Build structured, encouraging 7-day study timetables with actionable daily goals." }]
+                }
+            };
+
+            try {
+                const result = await callGeminiAPI(payload);
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                    outputEl.innerHTML = formatMarkdownToHTML(text);
+                } else {
+                    outputEl.innerHTML = `<span class="text-rose-600">Failed to generate study timetable.</span>`;
+                }
+            } catch(err) {
+                outputEl.innerHTML = `<span class="text-rose-600">Error: ${escapeHtml(err.message)}</span>`;
+            } finally {
+                loadingEl.classList.add('hidden');
+            }
+        }
+
+        // FEATURE 4: IN-MODAL AI NOTE GENERATOR FOR DATES
+        async function generateAINoteForDate() {
+            if(!selectedDayForModal) return;
+
+            const btn = document.getElementById('btnAiDraftNote');
+            const noteTextEl = document.getElementById('modalNoteText');
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Generating...`;
+
+            const weekInfo = getWeekInfoForDate(selectedDayForModal) || {};
+
+            const prompt = `Generate a concise 1-sentence personal academic study reminder or revision goal for an ESHCC student on ${selectedDayForModal} during Calendar Week ${weekInfo.cw || 'N/A'} (${weekInfo.termWk || ''}: ${weekInfo.activity || 'Lectures'}).`;
+
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: "Keep it under 15 words. Actionable and practical." }] }
+            };
+
+            try {
+                const result = await callGeminiAPI(payload);
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if(text) {
+                    const cleanText = text.replace(/^["']|["']$/g, '').trim();
+                    noteTextEl.value = cleanText;
+                }
+            } catch(e) {
+                console.error(e);
+            } finally {
+                btn.innerHTML = `Generate AI Note`;
+            }
+        }
+
+        // VIEW SWITCHING FUNCTION
+        function switchView(viewName) {
+            activeView = viewName;
+
+            // Update Tab active styling
+            document.querySelectorAll('.view-tab').forEach(tab => {
+                tab.classList.remove('bg-eur-navy', 'text-white', 'shadow-xs');
+                tab.classList.add('text-slate-600', 'hover:bg-slate-100');
+            });
+
+            const activeTab = document.getElementById(`tab-${viewName}`);
+            if (activeTab) {
+                activeTab.classList.remove('text-slate-600', 'hover:bg-slate-100');
+                activeTab.classList.add('bg-eur-navy', 'text-white', 'shadow-xs');
+            }
+
+            // Hide all view content blocks
+            document.querySelectorAll('.view-content').forEach(el => el.classList.add('hidden'));
+
+            // Show selected view content block
+            const selectedViewContainer = document.getElementById(`view-${viewName}`);
+            if (selectedViewContainer) {
+                selectedViewContainer.classList.remove('hidden');
+            }
+
+            // Trigger specific view renders
+            if (viewName === 'month') renderMonthGrid();
+            if (viewName === 'terms') renderTermBreakdown();
+            if (viewName === 'table') renderMasterTable();
+            if (viewName === 'holidays') renderHolidaysAndSpecial();
+            if (viewName === 'ai') populateAIWeekDropdown();
+        }
+
+        function populateAIWeekDropdown() {
+            const select = document.getElementById('aiWeekSelect');
+            if(!select || select.children.length > 0) return;
+
+            ESHCC_DATA.forEach(w => {
+                const opt = document.createElement('option');
+                opt.value = w.cw;
+                opt.textContent = `CW ${w.cw} - ${w.termWk} (${w.activity})`;
+                select.appendChild(opt);
+            });
+        }
+
+        // FILTER TOGGLING
+        function toggleFilter(filterType) {
+            currentFilter = filterType;
+
+            document.querySelectorAll('.filter-pill').forEach(pill => {
+                pill.classList.remove('bg-slate-800', 'text-white');
+            });
+
+            const activePill = document.getElementById(`filter-${filterType}`);
+            if (activePill) {
+                activePill.classList.add('bg-slate-800', 'text-white');
+            }
+
+            renderCurrentView();
+        }
+
+        // SEARCH INPUT HANDLER
+        function handleSearch() {
+            currentSearchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+            renderCurrentView();
+        }
+
+        // JUMP TO MONTH SELECTOR
+        function jumpToMonth(yearMonthStr) {
+            if (!yearMonthStr) return;
+            if (activeView !== 'month') {
+                switchView('month');
+            }
+            setTimeout(() => {
+                const card = document.getElementById(`month-card-${yearMonthStr}`);
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+
+        function renderCurrentView() {
+            if (activeView === 'month') renderMonthGrid();
+            if (activeView === 'terms') renderTermBreakdown();
+            if (activeView === 'table') renderMasterTable();
+            if (activeView === 'holidays') renderHolidaysAndSpecial();
+        }
+
+        // ACTIVITY STYLING HELPERS
+        function getTypeStyle(type) {
+            switch(type) {
+                case 'lecture':
+                    return { bg: 'bg-blue-50', text: 'text-blue-900', border: 'border-blue-200', badgeBg: 'bg-blue-100', badgeText: 'text-blue-800', icon: 'fa-chalkboard-user' };
+                case 'assessment':
+                    return { bg: 'bg-amber-50', text: 'text-amber-900', border: 'border-amber-200', badgeBg: 'bg-amber-100', badgeText: 'text-amber-800', icon: 'fa-file-signature' };
+                case 'teaching-free':
+                    return { bg: 'bg-teal-50', text: 'text-teal-900', border: 'border-teal-200', badgeBg: 'bg-teal-100', badgeText: 'text-teal-800', icon: 'fa-book-open' };
+                case 'recess':
+                    return { bg: 'bg-slate-100', text: 'text-slate-800', border: 'border-slate-300', badgeBg: 'bg-slate-200', badgeText: 'text-slate-800', icon: 'fa-umbrella-beach' };
+                case 'holiday':
+                    return { bg: 'bg-rose-50', text: 'text-rose-900', border: 'border-rose-200', badgeBg: 'bg-rose-100', badgeText: 'text-rose-800', icon: 'fa-calendar-minus' };
+                case 'special':
+                    return { bg: 'bg-purple-50', text: 'text-purple-900', border: 'border-purple-200', badgeBg: 'bg-purple-100', badgeText: 'text-purple-800', icon: 'fa-star' };
+                default:
+                    return { bg: 'bg-slate-50', text: 'text-slate-700', border: 'border-slate-200', badgeBg: 'bg-slate-100', badgeText: 'text-slate-700', icon: 'fa-calendar' };
+            }
+        }
+
+        function formatDateReadable(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr + 'T00:00:00');
+            return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        function getWeekInfoForDate(dateStr) {
+            return ESHCC_DATA.find(item => dateStr >= item.start && dateStr <= item.end);
+        }
+
+        function getSpecificHolidayForDate(dateStr) {
+            return SPECIFIC_HOLIDAYS.find(h => {
+                if (h.end) {
+                    return dateStr >= h.date && dateStr <= h.end;
+                }
+                return h.date === dateStr;
+            });
+        }
+
+        // RENDER MONTH GRID VIEW
+        function renderMonthGrid() {
+            const container = document.getElementById('view-month');
+            container.innerHTML = '';
+
+            MONTHS_TO_RENDER.forEach(m => {
+                const yearMonthKey = `${m.year}-${String(m.month + 1).padStart(2, '0')}`;
+                
+                const monthCard = document.createElement('div');
+                monthCard.id = `month-card-${yearMonthKey}`;
+                monthCard.className = 'month-card bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden';
+
+                const header = document.createElement('div');
+                header.className = 'bg-slate-900 text-white px-4 sm:px-6 py-2.5 sm:py-3 flex items-center justify-between border-b border-slate-800';
+                header.innerHTML = `
+                    <div class="flex items-center space-x-2 sm:space-x-3">
+                        <i class="fa-solid fa-calendar-days text-teal-400 text-sm sm:text-base"></i>
+                        <h2 class="text-sm sm:text-lg font-bold font-serif tracking-wide">${m.name}</h2>
+                    </div>
+                    <span class="text-[10px] sm:text-xs bg-slate-800 text-teal-300 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full font-mono border border-slate-700">2026–2027</span>
+                `;
+                monthCard.appendChild(header);
+
+                const gridTable = document.createElement('div');
+                gridTable.className = 'p-2 sm:p-4 overflow-x-auto';
+                
+                let html = `
+                    <table class="w-full border-collapse min-w-[580px] sm:min-w-[650px]">
+                        <thead>
+                            <tr class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase border-b border-slate-200 bg-slate-50">
+                                <th class="p-1.5 sm:p-2 w-12 sm:w-16 text-center border-r border-slate-200 text-slate-400">CW</th>
+                                <th class="p-1.5 sm:p-2 w-24 sm:w-28 text-left border-r border-slate-200">Term</th>
+                                <th class="p-1.5 sm:p-2 text-center w-1/7">Mon</th>
+                                <th class="p-1.5 sm:p-2 text-center w-1/7">Tue</th>
+                                <th class="p-1.5 sm:p-2 text-center w-1/7">Wed</th>
+                                <th class="p-1.5 sm:p-2 text-center w-1/7">Thu</th>
+                                <th class="p-1.5 sm:p-2 text-center w-1/7">Fri</th>
+                                <th class="p-1.5 sm:p-2 text-center w-1/7 text-rose-500">Sat</th>
+                                <th class="p-1.5 sm:p-2 text-center w-1/7 text-rose-500">Sun</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                `;
+
+                const firstDayOfMonth = new Date(m.year, m.month, 1);
+                const lastDayOfMonth = new Date(m.year, m.month + 1, 0);
+
+                let startDayOfWeek = firstDayOfMonth.getDay() - 1;
+                if (startDayOfWeek === -1) startDayOfWeek = 6;
+
+                let currentDate = new Date(m.year, m.month, 1 - startDayOfWeek);
+
+                while (currentDate <= lastDayOfMonth || currentDate.getDay() !== 1) {
+                    if (currentDate > lastDayOfMonth && currentDate.getDay() === 1) break;
+
+                    html += `<tr class="divide-x divide-slate-200">`;
+
+                    const mondayStr = currentDate.toISOString().split('T')[0];
+                    const weekData = getWeekInfoForDate(mondayStr) || {};
+
+                    html += `
+                        <td class="p-1 sm:p-2 text-center bg-slate-50 font-mono text-[10px] sm:text-xs text-slate-600 font-bold border-r border-slate-200">
+                            ${weekData.cw ? `${weekData.cw}` : '-'}
+                        </td>
+                    `;
+
+                    html += `
+                        <td class="p-1 sm:p-2 bg-slate-50 text-[10px] sm:text-xs border-r border-slate-200">
+                            <div class="font-semibold text-slate-800 leading-tight truncate">${weekData.term || ''}</div>
+                            <div class="text-[9px] sm:text-[10px] text-slate-500 font-medium truncate mt-0.5">${weekData.termWk || ''}</div>
+                        </td>
+                    `;
+
+                    for (let dayIdx = 0; dayIdx < 7; dayIdx++) {
+                        const dateStr = currentDate.toISOString().split('T')[0];
+                        const isCurrentMonth = currentDate.getMonth() === m.month;
+                        const dayNum = currentDate.getDate();
+                        const isWeekend = dayIdx === 5 || dayIdx === 6;
+
+                        const dayWeekInfo = getWeekInfoForDate(dateStr) || {};
+                        const holidayInfo = getSpecificHolidayForDate(dateStr);
+                        const userNote = userNotes[dateStr];
+
+                        let effectiveType = dayWeekInfo.type || 'default';
+                        let holidayLabel = '';
+
+                        if (holidayInfo) {
+                            if (holidayInfo.type === 'holiday') {
+                                effectiveType = 'holiday';
+                                holidayLabel = holidayInfo.name;
+                            } else if (holidayInfo.type === 'special') {
+                                effectiveType = 'special';
+                                holidayLabel = holidayInfo.name;
+                            } else if (holidayInfo.type === 'recess') {
+                                effectiveType = 'recess';
+                                holidayLabel = holidayInfo.name;
+                            }
+                        }
+
+                        let matchesFilter = true;
+                        if (currentFilter !== 'all') {
+                            matchesFilter = (effectiveType === currentFilter);
+                        }
+
+                        let matchesSearch = true;
+                        if (currentSearchQuery) {
+                            const combinedText = `${dayWeekInfo.activity || ''} ${dayWeekInfo.termWk || ''} ${holidayLabel} ${userNote || ''}`.toLowerCase();
+                            matchesSearch = combinedText.includes(currentSearchQuery);
+                        }
+
+                        const dayStyle = getTypeStyle(effectiveType);
+                        const opacityClass = !isCurrentMonth ? 'opacity-30 bg-slate-50' : (matchesFilter && matchesSearch ? '' : 'opacity-20 grayscale');
+
+                        html += `
+                            <td onclick="openNoteModal('${dateStr}')" class="day-cell p-1 sm:p-1.5 transition active:bg-teal-100/70 hover:bg-teal-50/50 cursor-pointer relative align-top ${opacityClass} ${isWeekend ? 'bg-slate-50/70' : ''}">
+                                <div class="flex items-center justify-between mb-0.5">
+                                    <span class="text-[11px] sm:text-xs font-bold ${isWeekend ? 'text-rose-600' : 'text-slate-700'}">${dayNum}</span>
+                                    ${userNote ? `<i class="fa-solid fa-sticky-note text-amber-500 text-[9px]" title="Has note"></i>` : ''}
+                                </div>
+                        `;
+
+                        if (isCurrentMonth && (dayWeekInfo.activity || holidayLabel)) {
+                            html += `
+                                <div class="text-[9px] sm:text-[10px] p-0.5 sm:p-1 rounded ${dayStyle.bg} ${dayStyle.text} border ${dayStyle.border} leading-tight font-medium shadow-2xs">
+                                    ${holidayLabel ? `<div class="font-bold truncate text-rose-700"><i class="fa-solid fa-star text-[8px] mr-0.5"></i> ${holidayLabel}</div>` : ''}
+                                    <div class="truncate">${dayWeekInfo.activity || ''}</div>
+                                </div>
+                            `;
+                        }
+
+                        if (userNote) {
+                            html += `
+                                <div class="mt-0.5 text-[8px] sm:text-[9px] bg-amber-100 text-amber-900 p-0.5 rounded border border-amber-300 font-sans truncate">
+                                    <i class="fa-solid fa-pen text-[7px] mr-0.5"></i> ${escapeHtml(userNote)}
+                                </div>
+                            `;
+                        }
+
+                        html += `</td>`;
+
+                        currentDate.setDate(currentDate.getDate() + 1);
+                    }
+
+                    html += `</tr>`;
+                }
+
+                html += `
+                        </tbody>
+                    </table>
+                `;
+
+                gridTable.innerHTML = html;
+                monthCard.appendChild(gridTable);
+                container.appendChild(monthCard);
+            });
+        }
+
+        // RENDER TERM BREAKDOWN VIEW
+        function renderTermBreakdown() {
+            const container = document.getElementById('view-terms');
+            container.innerHTML = '';
+
+            const termGroups = [
+                { id: "Term 1", title: "Term 1 (Autumn 2026)", desc: "Weeks 35 to 45 (24-08-2026 until 06-11-2026)" },
+                { id: "Term 2", title: "Term 2 (Winter 2026–2027)", desc: "Weeks 46 to 04 (09-11-2026 until 29-01-2027)" },
+                { id: "Term 3", title: "Term 3 (Spring 2027)", desc: "Weeks 05 to 14 (01-02-2027 until 09-04-2027)" },
+                { id: "Term 4", title: "Term 4 (Early Summer 2027)", desc: "Weeks 15 to 25 (12-04-2027 until 25-06-2027)" },
+                { id: "Resit", title: "Resit Period 2027", desc: "Weeks 26 to 28 (28-06-2027 until 16-07-2027)" },
+                { id: "Summer", title: "Education Free Period / Summer Recess", desc: "Weeks 29 to 32 (19-07-2027 until 13-08-2027)" },
+                { id: "2027-28", title: "Preview: Start Academic Year 2027–2028", desc: "Weeks 33 to 35 (16-08-2027 onwards)" }
+            ];
+
+            termGroups.forEach(group => {
+                const groupItems = ESHCC_DATA.filter(item => item.term === group.id);
+                if(groupItems.length === 0) return;
+
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden';
+
+                let cardHeader = `
+                    <div class="bg-slate-900 text-white px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                        <div>
+                            <h3 class="text-base sm:text-lg font-bold font-serif text-white">${group.title}</h3>
+                            <p class="text-xs text-teal-300 font-mono mt-0.5">${group.desc}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="askGeminiAdvisor('Give me a high-level academic survival strategy for ESHCC ${group.id}')" class="text-xs bg-purple-600 hover:bg-purple-500 text-white font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow transition">
+                                <i class="fa-solid fa-wand-magic-sparkles text-amber-300"></i> AI Strategy
+                            </button>
+                            <span class="text-xs bg-eur-green text-white font-bold px-3 py-1 rounded-full hidden sm:inline-block">${groupItems.length} Schedule Weeks</span>
+                        </div>
+                    </div>
+                `;
+
+                let body = `<div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">`;
+
+                groupItems.forEach(item => {
+                    const style = getTypeStyle(item.type);
+                    body += `
+                        <div class="p-4 rounded-xl border ${style.border} ${style.bg} space-y-2 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-mono font-bold text-slate-500">CW ${item.cw}</span>
+                                    <span class="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded ${style.badgeBg} ${style.badgeText}">
+                                        <i class="fa-solid ${style.icon} mr-1"></i> ${item.type}
+                                    </span>
+                                </div>
+                                <h4 class="text-sm font-bold text-slate-900 mt-2">${item.termWk}</h4>
+                                <p class="text-xs text-slate-700 font-medium mt-1">${item.activity}</p>
+                            </div>
+                            <div class="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-500">
+                                <span><i class="fa-regular fa-calendar mr-1"></i> ${formatDateReadable(item.start)} – ${formatDateReadable(item.end)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                body += `</div>`;
+                card.innerHTML = cardHeader + body;
+                container.appendChild(card);
+            });
+        }
+
+        // RENDER MASTER SCHEDULE TABLE
+        function renderMasterTable() {
+            const tbody = document.getElementById('masterTableBody');
+            tbody.innerHTML = '';
+
+            ESHCC_DATA.forEach(item => {
+                const style = getTypeStyle(item.type);
+
+                if (currentFilter !== 'all' && item.type !== currentFilter) return;
+
+                if (currentSearchQuery) {
+                    const text = `${item.cw} ${item.term} ${item.termWk} ${item.activity} ${item.notes || ''}`.toLowerCase();
+                    if (!text.includes(currentSearchQuery)) return;
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-mono font-bold text-slate-700 text-xs">CW ${item.cw}</td>
+                    <td class="py-3 px-4 font-semibold text-slate-800 text-xs">${item.termWk}</td>
+                    <td class="py-3 px-4 text-xs text-slate-600 font-mono">${formatDateReadable(item.start)} until ${formatDateReadable(item.end)}</td>
+                    <td class="py-3 px-4 text-xs font-medium text-slate-900">
+                        ${item.activity}
+                        ${item.notes ? `<div class="text-[11px] text-rose-600 font-normal mt-0.5"><i class="fa-solid fa-circle-info mr-1"></i>${item.notes}</div>` : ''}
+                    </td>
+                    <td class="py-3 px-4 text-center">
+                        <span class="inline-block text-[10px] font-bold px-2.5 py-1 rounded-full ${style.badgeBg} ${style.badgeText} uppercase tracking-wider">
+                            ${item.type}
+                        </span>
+                    </td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // RENDER HOLIDAYS & SPECIAL DATES
+        function renderHolidaysAndSpecial() {
+            const holidaysContainer = document.getElementById('holidaysListContainer');
+            const specialContainer = document.getElementById('specialDatesListContainer');
+
+            holidaysContainer.innerHTML = '';
+            specialContainer.innerHTML = '';
+
+            SPECIFIC_HOLIDAYS.forEach(item => {
+                const isHoliday = item.type === 'holiday' || item.type === 'recess';
+                const targetContainer = isHoliday ? holidaysContainer : specialContainer;
+
+                const div = document.createElement('div');
+                div.className = 'py-3 flex items-start justify-between gap-3';
+
+                const dateRangeStr = item.end && item.end !== item.date
+                    ? `${formatDateReadable(item.date)} to ${formatDateReadable(item.end)}`
+                    : formatDateReadable(item.date);
+
+                div.innerHTML = `
+                    <div>
+                        <h4 class="text-sm font-bold text-slate-800">${item.name}</h4>
+                        <p class="text-xs text-slate-500">${item.desc}</p>
+                    </div>
+                    <span class="text-xs font-mono font-bold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md whitespace-nowrap">
+                        ${dateRangeStr}
+                    </span>
+                `;
+
+                targetContainer.appendChild(div);
+            });
+        }
+
+        // MODAL NOTE OPERATIONS
+        function openNoteModal(dateStr) {
+            selectedDayForModal = dateStr || new Date().toISOString().split('T')[0];
+            const modal = document.getElementById('noteModal');
+            const titleEl = document.getElementById('modalTitle');
+            const dateInfoEl = document.getElementById('modalDateInfo');
+            const noteTextEl = document.getElementById('modalNoteText');
+            const deleteBtn = document.getElementById('btnDeleteNote');
+
+            const weekInfo = getWeekInfoForDate(selectedDayForModal) || {};
+            const holidayInfo = getSpecificHolidayForDate(selectedDayForModal);
+            const existingNote = userNotes[selectedDayForModal] || '';
+
+            titleEl.textContent = `Date Details: ${formatDateReadable(selectedDayForModal)}`;
+
+            dateInfoEl.innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500 font-medium">Calendar Week:</span>
+                        <span class="font-bold text-slate-800">${weekInfo.cw ? 'CW ' + weekInfo.cw : 'N/A'}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500 font-medium">Term Phase:</span>
+                        <span class="font-bold text-eur-green">${weekInfo.termWk || 'N/A'}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500 font-medium">Scheduled Activity:</span>
+                        <span class="font-bold text-slate-900">${weekInfo.activity || 'Regular Schedule'}</span>
+                    </div>
+                    ${holidayInfo ? `
+                    <div class="pt-2 border-t border-slate-200 text-rose-700 font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-star"></i> ${holidayInfo.name} (${holidayInfo.desc})
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+
+            noteTextEl.value = existingNote;
+
+            if (existingNote) {
+                deleteBtn.classList.remove('hidden');
+            } else {
+                deleteBtn.classList.add('hidden');
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeNoteModal() {
+            document.getElementById('noteModal').classList.add('hidden');
+            selectedDayForModal = null;
+        }
+
+        function saveUserNote() {
+            if (!selectedDayForModal) return;
+            const text = document.getElementById('modalNoteText').value.trim();
+
+            if (text) {
+                userNotes[selectedDayForModal] = text;
+            } else {
+                delete userNotes[selectedDayForModal];
+            }
+
+            localStorage.setItem('ESHCC_CALENDAR_NOTES', JSON.stringify(userNotes));
+            closeNoteModal();
+            renderMonthGrid();
+        }
+
+        function clearUserNote() {
+            if (!selectedDayForModal) return;
+            delete userNotes[selectedDayForModal];
+            localStorage.setItem('ESHCC_CALENDAR_NOTES', JSON.stringify(userNotes));
+            closeNoteModal();
+            renderMonthGrid();
+        }
+
+        // EXPORT TO PDF
+        function exportToPDF() {
+            const pdfModal = document.getElementById('pdfExportModal');
+            pdfModal.classList.remove('hidden');
+
+            if (activeView !== 'month') {
+                switchView('month');
+            }
+
+            setTimeout(() => {
+                const element = document.querySelector('.print-container');
+                const opt = {
+                    margin:       [10, 10, 10, 10],
+                    filename:     'ESHCC_Academic_Calendar_2026-2027.pdf',
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true, logging: false },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                };
+
+                html2pdf().set(opt).from(element).save().then(() => {
+                    pdfModal.classList.add('hidden');
+                }).catch(err => {
+                    console.error('PDF Generation Error:', err);
+                    pdfModal.classList.add('hidden');
+                    window.print();
+                });
+            }, 500);
+        }
+
+        // DOWNLOAD EDITABLE STANDALONE HTML
+        function downloadHTML() {
+            const htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ESHCC_Academic_Calendar_2026-2027.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // INITIALIZATION ON LOAD
+        window.onload = function() {
+            renderMonthGrid();
+            populateAIWeekDropdown();
+        };
+    </script>
 </body>
 </html>
