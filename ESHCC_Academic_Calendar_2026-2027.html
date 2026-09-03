@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ESHCC Academic Calendar 2026–2027</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f6f8;color:#172033;font-family:Arial,Helvetica,sans-serif}
+.wrap{max-width:1450px;margin:auto;padding:28px}h1{margin:0 0 5px;font-size:30px;color:#17365d}
+.sub{color:#687386;margin-bottom:20px}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.legend span{padding:7px 10px;border-radius:20px;font-size:12px;font-weight:bold}
+.controls{display:flex;gap:8px;margin-bottom:18px}button{background:#fff;border:1px solid #d6dde7;border-radius:8px;padding:9px 14px;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.4}.months{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.month{background:#fff;border:1px solid #d6dde7;border-radius:14px;overflow:hidden}
+.head{padding:12px 15px;background:#edf3f9;border-bottom:1px solid #d6dde7;display:flex;justify-content:space-between}
+.monthname{font-weight:bold;font-size:16px}.term{font-size:11px;color:#687386;font-weight:bold}
+.weekdays,.days{display:grid;grid-template-columns:repeat(7,1fr)}.weekday{text-align:center;font-size:10px;font-weight:bold;color:#687386;padding:7px;border-bottom:1px solid #d6dde7}
+.day{min-height:95px;padding:6px;border-right:1px solid #d6dde7;border-bottom:1px solid #d6dde7;overflow:hidden}
+.day:nth-child(7n){border-right:0}.outside{background:#fafbfc}.outside>*{visibility:hidden}
+.num{font-size:11px;font-weight:bold;color:#687386;margin-bottom:4px}.event{font-size:9px;line-height:1.2;font-weight:bold;border-radius:5px;padding:4px 5px;margin:3px 0}
+.note{margin-top:18px;background:#fff;border:1px solid #d6dde7;border-radius:12px;padding:12px;color:#687386;font-size:12px}
+@media(max-width:850px){.months{grid-template-columns:1fr}.wrap{padding:14px}}
+@media print{body{background:#fff}.wrap{max-width:none;padding:8mm}.controls{display:none}.months{grid-template-columns:1fr 1fr;gap:5mm}.day{min-height:23mm}@page{size:A4 landscape;margin:8mm}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>ESHCC Academic Calendar 2026–2027</h1>
+<div class="sub">Erasmus School of History, Culture and Communication · month-by-month view</div>
+<div id="legend" class="legend"></div>
+<div class="controls"><button id="prev">← Previous</button><button id="next">Next →</button><button id="print">Print / Save as PDF</button></div>
+<div id="months" class="months"></div>
+<div class="note"><b>No duplicate spillover:</b> days belonging to the previous or next month are intentionally blank. Each event is shown only within its actual calendar month.</div>
+</div>
+<script>
+const EVENTS=[["2026-08-17", "2026-08-23", "Eurekaweek 2026", "special"], ["2026-08-24", "2026-08-30", "Introduction student associations + new students", "special"], ["2026-08-31", "2026-08-31", "Start academic year", "special"], ["2026-08-31", "2026-09-04", "Lectures · T1 P1", "lecture"], ["2026-09-07", "2026-09-11", "Lectures · T1 P2", "lecture"], ["2026-09-14", "2026-09-18", "Lectures · T1 P3", "lecture"], ["2026-09-21", "2026-09-25", "Lectures · T1 P4", "lecture"], ["2026-09-28", "2026-10-02", "Lectures · T1 P5", "lecture"], ["2026-10-05", "2026-10-09", "Lectures · T1 P6", "lecture"], ["2026-10-12", "2026-10-16", "Lectures · T1 P7", "lecture"], ["2026-10-19", "2026-10-23", "Lectures · T1 P8", "lecture"], ["2026-10-26", "2026-10-30", "Teaching-free / self-study", "free"], ["2026-11-02", "2026-11-06", "Assessment & evaluation", "assessment"], ["2026-11-09", "2026-11-13", "Lectures · T2 P1", "lecture"], ["2026-11-16", "2026-11-20", "Lectures · T2 P2", "lecture"], ["2026-11-23", "2026-11-27", "Lectures · T2 P3", "lecture"], ["2026-11-30", "2026-12-04", "Lectures · T2 P4", "lecture"], ["2026-12-07", "2026-12-11", "Lectures · T2 P5", "lecture"], ["2026-12-14", "2026-12-18", "Teaching-free / self-study", "free"], ["2026-12-21", "2027-01-03", "Winter recess", "recess"], ["2027-01-04", "2027-01-08", "Lectures · T2 P7", "lecture"], ["2027-01-11", "2027-01-15", "Lectures · T2 P8", "lecture"], ["2027-01-18", "2027-01-22", "Lectures · T2 P9", "lecture"], ["2027-01-25", "2027-01-29", "Assessment & evaluation", "assessment"], ["2027-02-01", "2027-02-05", "Lectures · T3 P1", "lecture"], ["2027-02-08", "2027-02-12", "Lectures · T3 P2", "lecture"], ["2027-02-15", "2027-02-19", "Lectures · T3 P3", "lecture"], ["2027-02-22", "2027-02-26", "Lectures · T3 P4", "lecture"], ["2027-03-01", "2027-03-05", "Lectures · T3 P5", "lecture"], ["2027-03-08", "2027-03-12", "Lectures · T3 P6", "lecture"], ["2027-03-15", "2027-03-19", "Lectures · T3 P7", "lecture"], ["2027-03-22", "2027-03-26", "Lectures · T3 P8 · Fri no class", "lecture"], ["2027-03-29", "2027-04-02", "Teaching-free / self-study", "free"], ["2027-04-05", "2027-04-09", "Assessment & evaluation + exchange resits", "assessment"], ["2027-04-12", "2027-04-16", "Lectures · T4 P1", "lecture"], ["2027-04-19", "2027-04-23", "Lectures · T4 P2", "lecture"], ["2027-04-26", "2027-04-30", "Lectures · T4 P3 · Tue no class", "lecture"], ["2027-05-03", "2027-05-07", "Lectures · T4 P4 · Wed/Thu no class", "lecture"], ["2027-05-10", "2027-05-14", "Lectures · T4 P5", "lecture"], ["2027-05-17", "2027-05-21", "Lectures · T4 P6 · Mon no class", "lecture"], ["2027-05-24", "2027-05-28", "Lectures · T4 P7", "lecture"], ["2027-05-31", "2027-06-04", "Lectures · T4 P8", "lecture"], ["2027-06-07", "2027-06-11", "Lectures · T4 P9", "lecture"], ["2027-06-14", "2027-06-18", "Teaching-free / self-study", "free"], ["2027-06-21", "2027-06-25", "Assessment & evaluation", "assessment"], ["2027-06-28", "2027-07-02", "Resit BA1 priority + BA2/3", "assessment"], ["2027-07-05", "2027-07-09", "Resit minors + BA2/3 + BA1 T4", "assessment"], ["2027-07-12", "2027-07-16", "Teaching-free / grading", "free"], ["2027-07-19", "2027-08-15", "Summer recess", "recess"], ["2027-08-16", "2027-08-20", "Eurekaweek 2027", "special"], ["2027-08-23", "2027-08-29", "Introduction new students", "special"], ["2027-08-30", "2027-08-30", "Start academic year 2027–28", "special"], ["2027-03-26", "2027-03-26", "Good Friday", "holiday"], ["2027-03-29", "2027-03-29", "Easter Monday", "holiday"], ["2027-04-27", "2027-04-27", "Kings Day", "holiday"], ["2027-05-05", "2027-05-05", "Liberation Day", "holiday"], ["2027-05-06", "2027-05-06", "Ascension Day", "holiday"], ["2027-05-17", "2027-05-17", "Whit Monday", "holiday"]];
+const MONTHS=[[2026, 8, "Term 1"], [2026, 9, "Term 1"], [2026, 10, "Term 1"], [2026, 11, "Term 2"], [2026, 12, "Term 2"], [2027, 1, "Term 2"], [2027, 2, "Term 3"], [2027, 3, "Term 3"], [2027, 4, "Term 4"], [2027, 5, "Term 4"], [2027, 6, "Term 4"], [2027, 7, "Resit period"], [2027, 8, "Education free period"]];
+const TERMS={"2026,8": "Term 1", "2026,9": "Term 1", "2026,10": "Term 1", "2026,11": "Term 2", "2026,12": "Term 2", "2027,1": "Term 2", "2027,2": "Term 3", "2027,3": "Term 3", "2027,4": "Term 4", "2027,5": "Term 4", "2027,6": "Term 4", "2027,7": "Resit period", "2027,8": "Education free period"};
+const COLORS={
+lecture:["#DCEBFA","#214C7E","Lectures"],
+assessment:["#F8DDDD","#813737","Assessment / evaluation / resits"],
+free:["#DFF1E6","#286044","Teaching-free / self-study / grading"],
+recess:["#FFF0C9","#735615","Recess"],
+special:["#E8DEF8","#5A4189","Special dates"],
+holiday:["#ECEFF3","#4B5563","Public holiday / no class"]
+};
+let page=0, perPage=4;
+function date(s){let a=s.split("-").map(Number);return new Date(Date.UTC(a[0],a[1]-1,a[2]));}
+function render(){
+ const root=document.getElementById("months");root.innerHTML="";
+ MONTHS.slice(page*perPage,page*perPage+perPage).forEach(function(m){
+  const y=m[0],mo=m[1],term=m[2],first=new Date(Date.UTC(y,mo-1,1));
+  let start=new Date(first);start.setUTCDate(1-((first.getUTCDay()+6)%7));
+  const sec=document.createElement("section");sec.className="month";
+  sec.innerHTML='<div class="head"><span class="monthname">'+first.toLocaleDateString("en-GB",{month:"long",year:"numeric",timeZone:"UTC"})+'</span><span class="term">'+term+'</span></div><div class="weekdays">'+["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(x=>'<div class="weekday">'+x+'</div>').join("")+'</div><div class="days"></div>';
+  const days=sec.querySelector(".days");
+  for(let i=0;i<42;i++){
+   let cur=new Date(start);cur.setUTCDate(start.getUTCDate()+i);
+   const cell=document.createElement("div");cell.className="day";
+   if(cur.getUTCMonth()!==mo-1){cell.classList.add("outside");cell.innerHTML="<div class='num'>"+cur.getUTCDate()+"</div>";days.appendChild(cell);continue;}
+   cell.innerHTML="<div class='num'>"+cur.getUTCDate()+"</div>";
+   EVENTS.filter(e=>date(e[0])<=cur&&date(e[1])>=cur).slice(0,3).forEach(function(e){
+    const ev=document.createElement("div");ev.className="event";ev.textContent=e[2];ev.style.background=COLORS[e[3]][0];ev.style.color=COLORS[e[3]][1];cell.appendChild(ev);
+   });
+   days.appendChild(cell);
+  }
+  root.appendChild(sec);
+ });
+ document.getElementById("prev").disabled=page===0;
+ document.getElementById("next").disabled=(page+1)*perPage>=MONTHS.length;
+}
+Object.keys(COLORS).forEach(function(k){let s=document.createElement("span");s.textContent=COLORS[k][2];s.style.background=COLORS[k][0];s.style.color=COLORS[k][1];document.getElementById("legend").appendChild(s)});
+document.getElementById("prev").onclick=function(){if(page>0){page--;render()}};
+document.getElementById("next").onclick=function(){if((page+1)*perPage<MONTHS.length){page++;render()}};
+document.getElementById("print").onclick=function(){window.print()};
+render();
+</script>
+</body>
+</html>
